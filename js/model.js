@@ -24,7 +24,6 @@ function getResults() {
 }
 
 function setData(newData) {
-  console.log("New data", newData);
   if (newData.onUpdate === "inputCost") {
     // price update
     if (newData.cost < data.minPrice) newData.cost = data.minPrice;
