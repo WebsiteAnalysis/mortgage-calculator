@@ -27,6 +27,11 @@ window.onload = function () {
   const cleaveTerm = termInput(getData);
   const sliderTerm = termRange(getData);
 
+  // Starting result
+  Model.setData({});
+  const results = Model.getResults();
+  updateResultsView(results);
+
   document.addEventListener("updateForm", (e) => {
     Model.setData(e.detail);
 
