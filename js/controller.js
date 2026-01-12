@@ -6,6 +6,8 @@ import costInput from "./view/costInput.js";
 import costRange from "./view/costRange.js";
 import paymentInput from "./view/paymentInput.js";
 import paymentRange from "./view/paymentRange.js";
+import termInput from "./view/termInput.js";
+import termRange from "./view/termRange.js";
 
 window.onload = function () {
   const getData = Model.getData;
@@ -17,9 +19,13 @@ window.onload = function () {
   const cleaveCost = costInput(getData);
   const sliderCost = costRange(getData);
 
-  // Init paymentInput
+  // Init paymentInput and paymentRange
   const cleavePayment = paymentInput(getData);
   const sliderPayment = paymentRange(getData);
+
+  // Init termInput and termRange
+  const cleaveTerm = termInput(getData);
+  const sliderTerm = termRange(getData);
 
   document.addEventListener("updateForm", (e) => {
     Model.setData(e.detail);
@@ -66,6 +72,16 @@ window.onload = function () {
     // paymentSlider
     if (data.onUpdate !== "paymentSlider") {
       sliderPayment.noUiSlider.set(data.paymentPercents * 100);
+    }
+
+    // termInput
+    if (data.onUpdate !== "inputTerm") {
+      cleaveTerm.setRawValue(data.term);
+    }
+
+    // termSlider
+    if (data.onUpdate !== "termSlider") {
+      sliderTerm.noUiSlider.set(data.term);
     }
   }
 };

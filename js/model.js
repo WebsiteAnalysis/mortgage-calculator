@@ -13,6 +13,9 @@ let data = {
   getMaxPayment: function () {
     return this.cost * this.maxPaymentPercents;
   },
+  minYear: 1,
+  maxYear: 30,
+  term: 10,
   programs: {
     base: 0.23,
     it: 0.06,
@@ -81,6 +84,16 @@ function setData(newData) {
   if (newData.onUpdate === "paymentSlider") {
     newData.paymentPercents = newData.paymentPercents / 100;
     data.payment = data.cost * newData.paymentPercents;
+  }
+
+  if (newData.onUpdate === "inputTerm") {
+    if (newData.term > data.maxYear) {
+      newData.term = data.maxYear;
+    }
+
+    if (newData.term < data.minYear) {
+      newData.term = data.minYear;
+    }
   }
 
   data = {
