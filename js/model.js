@@ -3,6 +3,16 @@ let data = {
   cost: 12000000,
   minPrice: 375000,
   maxPrice: 100000000,
+  minPaymentPercents: 0.2,
+  maxPaymentPercents: 0.9,
+  paymentPercents: 0.5,
+  payment: 6000000,
+  getMinPayment: function () {
+    return this.cost * this.minPaymentPercents;
+  },
+  getMaxPayment: function () {
+    return this.cost * this.maxPaymentPercents;
+  },
   programs: {
     base: 0.23,
     it: 0.06,
@@ -24,10 +34,53 @@ function getResults() {
 }
 
 function setData(newData) {
-  if (newData.onUpdate === "inputCost") {
-    // price update
+  if (newData.onUpdate === "radioProgram") {
+    if (newData.id === "zero-value") {
+      data.minPaymentPercents = 0;
+    } else {
+      data.minPaymentPercents = 0.2;
+    }
+  }
+
+  if (newData.onUpdate === "inputCost" || newData.onUpdate === "costSlider") {
+    // Price update
+    // If the cost is less than the min price
     if (newData.cost < data.minPrice) newData.cost = data.minPrice;
+
+    // If the cost is greater than the max price
     if (newData.cost > data.maxPrice) newData.cost = data.maxPrice;
+
+    // If the new cost is less than the down payment
+    if (data.payment > data.getMaxPayment()) {
+      data.payment = data.getMaxPayment();
+    }
+
+    // If the down payment amount is less than the allowable min payment
+    if (data.payment < data.getMinPayment()) {
+      data.payment = data.getMinPayment();
+    }
+  }
+
+  if (newData.onUpdate === "inputPayment") {
+    // Recalculate %
+    newData.paymentPercents = (newData.payment * 100) / data.cost / 100;
+
+    // If the percentage is more than 90%
+    if (newData.paymentPercents > data.maxPaymentPercents) {
+      newData.paymentPercents = data.maxPaymentPercents;
+      newData.payment = data.cost * data.maxPaymentPercents;
+    }
+
+    // If the percentage is less than 90%
+    if (newData.paymentPercents < data.minPaymentPercents) {
+      newData.paymentPercents = data.minPaymentPercents;
+      newData.payment = data.cost * data.minPaymentPercents;
+    }
+  }
+
+  if (newData.onUpdate === "paymentSlider") {
+    newData.paymentPercents = newData.paymentPercents / 100;
+    data.payment = data.cost * newData.paymentPercents;
   }
 
   data = {

@@ -1,8 +1,11 @@
 import * as Model from "./model.js";
 import updateResultsView from "./view/updateResultsView.js";
 import programs from "./view/radioPrograms.js";
+import { updateMinPercents } from "./view/utils.js";
 import costInput from "./view/costInput.js";
 import costRange from "./view/costRange.js";
+import paymentInput from "./view/paymentInput.js";
+import paymentRange from "./view/paymentRange.js";
 
 window.onload = function () {
   const getData = Model.getData;
@@ -13,6 +16,10 @@ window.onload = function () {
   // Init costInput and costRange
   const cleaveCost = costInput(getData);
   const sliderCost = costRange(getData);
+
+  // Init paymentInput
+  const cleavePayment = paymentInput(getData);
+  const sliderPayment = paymentRange(getData);
 
   document.addEventListener("updateForm", (e) => {
     Model.setData(e.detail);
@@ -28,6 +35,19 @@ window.onload = function () {
   });
 
   function updateFormAndSliders(data) {
+    // Radio buttons
+    if (data.onUpdate === "radioProgram") {
+      updateMinPercents(data);
+
+      // Payment slider
+      sliderPayment.noUiSlider.updateOptions({
+        range: {
+          min: data.minPaymentPercents * 100,
+          max: data.maxPaymentPercents * 100,
+        },
+      });
+    }
+
     // costInput
     if (data.onUpdate !== "inputCost") {
       cleaveCost.setRawValue(data.cost);
@@ -36,6 +56,16 @@ window.onload = function () {
     // costSlider
     if (data.onUpdate !== "costSlider") {
       sliderCost.noUiSlider.set(data.cost);
+    }
+
+    // paymentInput
+    if (data.onUpdate !== "inputPayment") {
+      cleavePayment.setRawValue(data.payment);
+    }
+
+    // paymentSlider
+    if (data.onUpdate !== "paymentSlider") {
+      sliderPayment.noUiSlider.set(data.paymentPercents * 100);
     }
   }
 };
